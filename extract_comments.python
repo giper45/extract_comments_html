@@ -1,0 +1,38 @@
+#!/usr/bin/env python
+# -*- coding: iso-8859-15 -*-
+
+
+"""A simple python script template.
+"""
+
+from __future__ import print_function
+import os
+import sys 
+import argparse
+import re
+from bs4 import BeautifulSoup, Comment
+#def extract_comment(content_file):
+    
+
+
+
+
+
+def main(arguments):
+    parser = argparse.ArgumentParser(
+        description=__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument('dir', help="Dir website")
+
+    args = parser.parse_args(arguments)
+    walk_dir=args.dir
+    for root, subdirs, files in os.walk(walk_dir):
+        files = [ fi for fi in files if fi.endswith(".html") or fi.endswith(".php") ]
+        for fname in files:
+                with open(os.path.join(root, fname), 'r') as fin:
+                        soup = BeautifulSoup(fin, 'html.parser')
+                        for comments in soup.findAll(text=lambda text:isinstance(text, Comment)):
+                                print(root+os.sep+fname+":"+comments)
+
+if __name__ == '__main__':
+    sys.exit(main(sys.argv[1:]))
